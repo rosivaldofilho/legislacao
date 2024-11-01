@@ -8,6 +8,12 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Verifica se há uma mensagem de sucesso na sessão e a exibe --}}
+            @if(session('success'))
+                <div class="bg-green-100 text-green-700 px-4 py-3 sm:rounded-lg mb-4 shadow">
+                    {{ session('success') }}
+                </div>
+            @endif
             <div class="bg-white dark:bg-gray-800 overflow-hidden sm:rounded-lg shadow-md">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <!-- Botão para criar um novo decreto -->

@@ -26,7 +26,7 @@
                         <div class="grid grid-cols-1 gap-6">
                             <div>
                                 <label for="number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número</label>
-                                <input type="text" name="number" id="number" value="{{ old('number', $decree->number) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o número do decreto">
+                                <input type="text" name="number" id="number" value="{{ old('number', $decree->number) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o número do decreto">
                                 @error('number')
                                     <span class="text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
@@ -34,7 +34,7 @@
 
                             <div>
                                 <label for="doe_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DOE</label>
-                                <input type="text" name="doe_number" id="doe_number" value="{{ old('doe_number', $decree->doe_number) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o número do DOE">
+                                <input type="text" name="doe_number" id="doe_number" value="{{ old('doe_number', $decree->doe_number) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o número do DOE">
                                 @error('doe_number')
                                     <span class="text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
@@ -42,7 +42,7 @@
 
                             <div>
                                 <label for="effective_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data de Publicação</label>
-                                <input type="date" name="effective_date" id="effective_date" value="{{ old('effective_date', $decree->effective_date->format('Y-m-d')) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100">
+                                <input type="date" name="effective_date" id="effective_date" value="{{ old('effective_date', $decree->effective_date->format('Y-m-d')) }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100">
                                 @error('effective_date')
                                     <span class="text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
@@ -58,7 +58,7 @@
 
                             <div>
                                 <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ementa</label>
-                                <textarea name="summary" id="summary" rows="3" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite a ementa do decreto">{{ old('summary', $decree->summary) }}</textarea>
+                                <textarea name="summary" id="summary" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite a ementa do decreto">{{ old('summary', $decree->summary) }}</textarea>
                                 @error('summary')
                                     <span class="text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
@@ -66,7 +66,7 @@
 
                             <div>
                                 <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Conteúdo</label>
-                                <textarea name="content" id="content" rows="8" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o conteúdo do decreto">{{ old('content', $decree->content) }}</textarea>
+                                <textarea name="content" id="content" rows="8" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o conteúdo do decreto">{{ old('content', $decree->content) }}</textarea>
                                 @error('content')
                                     <span class="text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
