@@ -30,6 +30,41 @@ class DecreeController extends Controller
         return view('decrees.create');
     }
 
+    public function search(Request $request)
+    {
+        $query = Decree::query();
+
+        // Filtros
+        if ($request->filled('number')) {
+            $query->where('number', 'like', '%' . $request->input('number') . '%');
+        }
+
+        if ($request->filled('doe_number')) {
+            $query->where('doe_number', 'like', '%' . $request->input('doe_number') . '%');
+        }
+
+        if ($request->filled('effective_date')) {
+            $query->whereDate('effective_date', $request->input('effective_date'));
+        }
+
+        if ($request->filled('summary')) {
+            $query->where('summary', 'like', '%' . $request->input('summary') . '%');
+        }
+
+        if ($request->filled('created_at')) {
+            $query->whereDate('created_at', $request->input('created_at'));
+        }
+
+        // Ordenação
+        if ($request->filled('sort_by') && $request->filled('sort_order')) {
+            $query->orderBy($request->input('sort_by'), $request->input('sort_order'));
+        }
+
+        $decrees = $query->paginate(10);
+
+        return view('decrees.search', compact('decrees'));
+    }
+
     public function store(Request $request)
     {
         // Validar os dados do formulário

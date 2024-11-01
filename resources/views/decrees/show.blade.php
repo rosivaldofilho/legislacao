@@ -16,12 +16,12 @@
                             <p class="text-gray-600">{{ $decree->number }}</p>
                         </div>
                         <div>
-                            <h3 class="text-lg font-medium">DOE</h3>
-                            <p class="text-gray-600">{{ $decree->doe_number }}</p>
-                        </div>
-                        <div>
                             <h3 class="text-lg font-medium">Data de Publicação</h3>
                             <p class="text-gray-600">{{ \Carbon\Carbon::parse($decree->effective_date)->format('d/m/Y') }}</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-medium">Publicado no Diário Oficial</h3>
+                            <p class="text-blue-600"><a href="https://diariooficial.to.gov.br/busca/?por=edicao&edicao={{ $decree->doe_number }}" target="_blank">DOE {{ $decree->doe_number }}</a></p>
                         </div>
                         <div>
                             <h3 class="text-lg font-medium">Ementa</h3>

@@ -8,6 +8,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/decrees/search', [DecreeController::class, 'search'])->name('decrees.search');
+
 Route::get('/teste', function () {
     return view('teste');
 });
