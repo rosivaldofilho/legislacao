@@ -11,8 +11,17 @@ class DecreeController extends Controller
     public function index()
     {
         // Listar todos os Decrees
-        $decrees = Decree::with('user')->get();
+        $decrees = Decree::paginate(10); // 10 itens por página
         return view('decrees.index', compact('decrees'));
+    }
+
+    public function show(Decree $decree)
+    {
+        // Carrega anexos do decreto, se houver relação com 'attachments'
+        $decree->load('attachments');
+
+        // Retorna a view de exibição do decreto com os dados do decreto
+        return view('decrees.show', compact('decree'));
     }
 
     public function create()
@@ -26,10 +35,11 @@ class DecreeController extends Controller
         // Validar os dados do formulário
         $validated = $request->validate([
             'number' => 'required|unique:decrees',
+            'doe_number' => 'required',
             'effective_date' => 'required|date',
             'summary' => 'required|max:255',
             'content' => 'required',
-            'attachments.*' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
+            'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
         ]);
 
         // Criar um novo Decree
@@ -41,7 +51,7 @@ class DecreeController extends Controller
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $attachment) {
                 $path = $attachment->store('attachments', 'public');
-                $decree->attachments()->create(['file_path' => $path]);
+                $decree->attachments()->create(['file_pdf' => $path]);
             }
         }
 
@@ -59,22 +69,17 @@ class DecreeController extends Controller
         // Validar os dados do formulário
         $validated = $request->validate([
             'number' => 'required|unique:decrees,number,' . $decree->id,
+            'doe_number' => 'required',
             'effective_date' => 'required|date',
             'summary' => 'required|max:255',
             'content' => 'required',
-            'attachments.*' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
+            'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
         ]);
 
         // Atualizar o Decree
         $decree->update($validated);
 
         // Salvar novos arquivos anexados, se houver
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $attachment) {
-                $path = $attachment->store('attachments', 'public');
-                $decree->attachments()->create(['file_path' => $path]);
-            }
-        }
 
         return redirect()->route('decrees.index')->with('success', 'Decree updated successfully.');
     }

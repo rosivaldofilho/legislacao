@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('decrees', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->unique();
-            $table->string('effective_date');
-            $table->string('summary', 255);
-            $table->string('content');
-            $table->string('filePath');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('number')->unique();// Número do decreto
+            $table->string('doe_number')->unique();// Número do DOE
+            $table->timestamp('effective_date');// Data do documento
+            $table->string('summary', 255);// Ementa
+            $table->string('content');// Conteúdo
+            $table->string('file_pdf')->nullable();// Arquivo PDF
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');// Usuário
             $table->softDeletes(); // Para implementar exclusão lógica
             $table->timestamps();
         });

@@ -1,38 +1,86 @@
-@extends('layouts.app')
+{{-- resources/views/decrees/edit.blade.php --}}
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Editar Decreto') }}
+        </h2>
+    </x-slot>
 
-@section('content')
-<h1>Editar Decreto</h1> <!-- Alterado para Editar Decreto -->
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        @if ($errors->any())
+            <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-md sm:rounded-lg">
+                <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <form action="{{ route('decrees.update', $decree->id) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
 
-<form action="{{ route('decrees.update', $decree) }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    @method('PUT')
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label for="number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número</label>
+                                <input type="text" name="number" id="number" value="{{ old('number', $decree->number) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o número do decreto">
+                                @error('number')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
 
-    <div class="mb-3">
-        <label for="number" class="form-label">Número</label>
-        <input type="text" class="form-control" id="number" name="number" value="{{ $decree->number }}" required>
+                            <div>
+                                <label for="doe_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">DOE</label>
+                                <input type="text" name="doe_number" id="doe_number" value="{{ old('doe_number', $decree->doe_number) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o número do DOE">
+                                @error('doe_number')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="effective_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data de Publicação</label>
+                                <input type="date" name="effective_date" id="effective_date" value="{{ old('effective_date', $decree->effective_date->format('Y-m-d')) }}" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100">
+                                @error('effective_date')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="file_pdf" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Arquivo PDF (opcional)</label>
+                                <input type="file" name="file_pdf" id="file_pdf" accept=".pdf" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100">
+                                @error('file_pdf')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="summary" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Ementa</label>
+                                <textarea name="summary" id="summary" rows="3" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite a ementa do decreto">{{ old('summary', $decree->summary) }}</textarea>
+                                @error('summary')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Conteúdo</label>
+                                <textarea name="content" id="content" rows="8" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100" placeholder="Digite o conteúdo do decreto">{{ old('content', $decree->content) }}</textarea>
+                                @error('content')
+                                    <span class="text-red-600 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mt-6">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 active:bg-blue-600 focus:outline-none focus:border-blue-700 focus:ring focus:ring-blue-200 disabled:opacity-25 transition">
+                                Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label for="effective_date" class="form-label">Data de Publicação</label> <!-- Alterado para Data de Publicação -->
-        <input type="date" class="form-control" id="effective_date" name="effective_date" value="{{ $decree->effective_date->format('Y-m-d') }}" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="summary" class="form-label">Ementa</label> <!-- Alterado para Ementa -->
-        <input type="text" class="form-control" id="summary" name="summary" value="{{ $decree->summary }}" required>
-    </div>
-
-    <div class="mb-3">
-        <label for="content" class="form-label">Conteúdo</label>
-        <textarea class="form-control" id="content" name="content" rows="5" required>{{ $decree->content }}</textarea>
-    </div>
-
-    <div class="mb-3">
-        <label for="attachments" class="form-label">Anexos (PDF)</label>
-        <input type="file" class="form-control" id="attachments" name="attachments[]" multiple>
-    </div>
-
-    <button type="submit" class="btn btn-success">Salvar</button> <!-- Alterado para Salvar -->
-    <a href="{{ route('decrees.index') }}" class="btn btn-secondary">Voltar</a>
-</form>
-@endsection
+</x-app-layout>

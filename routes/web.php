@@ -8,6 +8,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/teste', function () {
+    return view('teste');
+});
+
 // Rotas para o gerenciamento de Decretos
 Route::resource('decrees', DecreeController::class);
 

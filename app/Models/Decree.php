@@ -13,10 +13,16 @@ class Decree extends Model
     // Atributos que podem ser atribuídos em massa
     protected $fillable = [
         'number',          // Número do decreto
+        'doe_number',          // Número do decreto
         'effective_date',  // Data de Publicação
         'summary',         // Ementa
         'content',         // Conteúdo
+        'file_pdf',         // Arquivo PDF
         'user_id',         // ID do usuário que criou o decreto
+    ];
+
+    protected $casts = [
+        'effective_date' => 'datetime', // Define effective_date como timestamp
     ];
 
     // Define a relação com o usuário
@@ -31,10 +37,8 @@ class Decree extends Model
         return $this->hasMany(Attachment::class);
     }
 
-    // Métodos adicionais podem ser definidos aqui
-
     // Exemplo: Para formatar a data de publicação
-    public function getFormattedEffectiveDateAttribute()
+    public function getEffectiveDateFormatBr()
     {
         return $this->effective_date->format('d/m/Y');
     }
