@@ -17,16 +17,34 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-medium">Data de Publicação</h3>
-                            <p class="text-gray-600">{{ \Carbon\Carbon::parse($decree->effective_date)->format('d/m/Y') }}</p>
+                            <p class="text-gray-600">
+                                {{ \Carbon\Carbon::parse($decree->effective_date)->format('d/m/Y') }}</p>
                         </div>
                         <div>
                             <h3 class="text-lg font-medium">Publicado no Diário Oficial</h3>
-                            <p class="text-blue-600"><a href="https://diariooficial.to.gov.br/busca/?por=edicao&edicao={{ $decree->doe_number }}" target="_blank">DOE {{ $decree->doe_number }}</a></p>
+                            <p class="text-blue-600"><a
+                                    href="https://diariooficial.to.gov.br/busca/?por=edicao&edicao={{ $decree->doe_number }}"
+                                    target="_blank">DOE {{ $decree->doe_number }}</a></p>
                         </div>
                         <div>
                             <h3 class="text-lg font-medium">Ementa</h3>
                             <p class="text-gray-600 break-words">{{ $decree->summary }}</p>
                         </div>
+
+                        @if ($decree->file_pdf)
+                            <a href="{{ asset('storage/' . $decree->file_pdf) }}" target="_blank"
+                                class="text-blue-500 hover:underline mt-4 block">
+                                Visualizar PDF
+                            </a>
+                        @endif
+                        @if ($decree->file_pdf)
+                            <div class="mt-6">
+                                <h4 class="font-semibold text-gray-900 dark:text-gray-100">Pré-visualização do PDF</h4>
+                                <object data="{{ asset('storage/' . $decree->file_pdf) }}" type="application/pdf" width="100%" height="600px">
+                                    <p>Seu navegador não suporta visualização de PDFs. <a href="{{ asset('storage/' . $decree->file_pdf) }}" target="_blank">Clique aqui para baixar o PDF.</a></p>
+                                </object>
+                            </div>
+                        @endif
                     </div>
 
                     {{-- Botão para abrir o modal --}}
@@ -34,13 +52,15 @@
                         <a href="#" onclick="toggleModal()" class="px-4 py-2 bg-green-600 text-white rounded">
                             Ver Conteúdo
                         </a>
-                        <a href="{{ route('decrees.edit', $decree->id) }}" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded">
+                        <a href="{{ route('decrees.edit', $decree->id) }}"
+                            class="ml-4 px-4 py-2 bg-blue-600 text-white rounded">
                             Editar Decreto
                         </a>
-                        <a href="{{ route('decrees.index') }}" class="ml-4 px-4 py-2 bg-gray-600 text-white rounded">Voltar</a>
-                        
+                        <a href="{{ route('decrees.index') }}"
+                            class="ml-4 px-4 py-2 bg-gray-600 text-white rounded">Voltar</a>
+
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -51,12 +71,14 @@
         <div class="flex items-center justify-center min-h-screen">
             {{-- Fundo escuro para clicar fora e fechar o modal --}}
             <div onclick="toggleModal()" class="fixed inset-0 bg-gray-500 opacity-75"></div>
-            
+
             {{-- Conteúdo do modal ampliado --}}
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full h-3/4 p-6 relative z-20 overflow-y-auto">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full h-3/4 p-6 relative z-20 overflow-y-auto">
                 <div class="flex justify-between items-center">
                     <h3 class="text-lg font-medium">Conteúdo do Decreto</h3>
-                    <button onclick="toggleModal()" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 font-bold text-xl">
+                    <button onclick="toggleModal()"
+                        class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 font-bold text-xl">
                         &times;
                     </button>
                 </div>

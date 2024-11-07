@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Decree;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class DecreeController extends Controller
 {
@@ -77,20 +78,19 @@ class DecreeController extends Controller
             'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
         ]);
 
+
         // Criar um novo Decree
+
+        // Processa o upload do arquivo PDF, se houver
+        if ($request->hasFile('file_pdf')) {
+            $validated['file_pdf'] = $request->file('file_pdf')->store('pdf', 'public');
+        }
+
         $decree = new Decree($validated);
         $decree->user_id = Auth::id(); // Registrar o usuário que criou
         $decree->save();
 
-        // Salvar os arquivos anexados
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $attachment) {
-                $path = $attachment->store('attachments', 'public');
-                $decree->attachments()->create(['file_pdf' => $path]);
-            }
-        }
-
-        return redirect()->route('decrees.index')->with('success', 'Decree created successfully.');
+        return redirect()->route('decrees.index')->with('success', 'Decreto cadastrado com sucesso!');
     }
 
     public function edit(Decree $decree)
@@ -111,19 +111,31 @@ class DecreeController extends Controller
             'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
         ]);
 
+        // Processa o upload de um novo arquivo PDF, se houver
+        if ($request->hasFile('file_pdf')) {
+
+            // Exclui o arquivo PDF anterior, se existir
+            if ($decree->file_pdf && Storage::disk('public')->exists($decree->file_pdf)) {
+                Storage::disk('public')->delete($decree->file_pdf);
+            }
+
+            // Armazena o novo arquivo e atualiza o caminho
+            $validated['file_pdf'] = $request->file('file_pdf')->store('pdf', 'public');
+        }
+
         // Atualizar o Decree
         $decree->update($validated);
 
         // Salvar novos arquivos anexados, se houver
 
-        return redirect()->route('decrees.index')->with('success', 'Decree updated successfully.');
+        return redirect()->route('decrees.index')->with('success', 'Decreto atualizado com sucesso!');
     }
 
     public function destroy(Decree $decree)
     {
         // Excluir o Decree (exclusão lógica)
         $decree->delete();
-        return redirect()->route('decrees.index')->with('success', 'Decree deleted successfully.');
+        return redirect()->route('decrees.index')->with('success', 'Decreto deletado com sucesso!');
     }
 
     public function restore($id)
@@ -131,6 +143,6 @@ class DecreeController extends Controller
         // Restaurar um Decree excluído
         $decree = Decree::withTrashed()->findOrFail($id);
         $decree->restore();
-        return redirect()->route('decrees.index')->with('success', 'Decree restored successfully.');
+        return redirect()->route('decrees.index')->with('success', 'Decreto restaurado com sucesso!');
     }
 }
