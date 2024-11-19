@@ -14,6 +14,14 @@ Route::get('/teste', function () {
     return view('teste');
 });
 
+Route::get('/dashboard-2', function () {
+    return view('dashboard-2');
+});
+
+Route::get('/dashboard1', function () {
+    return view('dashboard1');
+});
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

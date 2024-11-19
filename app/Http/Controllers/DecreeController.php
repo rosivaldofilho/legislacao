@@ -9,11 +9,25 @@ use Illuminate\Support\Facades\Storage;
 
 class DecreeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Listar todos os Decrees
-        $decrees = Decree::paginate(10); // 10 itens por página
-        return view('decrees.index', compact('decrees'));
+        // Define o campo de ordenação padrão e a direção padrão
+        $sort = $request->get('sort', 'created_at'); // Ordenação padrão pelo campo 'number'
+        $direction = $request->get('direction', 'desc'); // Direção padrão 'asc'
+
+        // Verifica se o campo de ordenação é válido e seguro
+        if (!in_array($sort, ['number', 'doe_number', 'effective_date', 'summary', 'created_at'])) {
+            $sort = 'number';
+        }
+
+        // Verifica se a direção de ordenação é válida ('asc' ou 'desc')
+        $direction = $direction === 'desc' ? 'desc' : 'asc';
+
+        // Realiza a busca e ordenação no banco de dados com paginação
+        $decrees = Decree::orderBy($sort, $direction)->paginate(10);
+
+        // Passa as variáveis para a view
+        return view('decrees.index', compact('decrees', 'sort', 'direction'));
     }
 
     public function show(Decree $decree)
