@@ -52,17 +52,27 @@
                     <div class="grid grid-cols-1 gap-6">
                         <div class=" md:px-4 lg:px-40">
                             <img class="mx-auto" src="{{ asset('/img/governo_do_estado_do_tocantins.jpg') }}" alt="governo do estado do Tocantins">
-                            <div class="break-words" id="conteudo_documento">{!! $decree->content !!}</div>
+                            {{-- Título --}}
+                            <div class="break-words flex justify-center text-center font-bold">
+                                <span>DECRETO Nº {{ $decree->number }}, de {{ $decree->effective_date->locale('pt-BR')->translatedFormat('d F Y') }}</span>
+                            </div>
+                            {{-- Ementa --}}
+                            <div class="break-words float-right w-4/5 md:w-1/2 mt-4 text-justify"
+                            style="font-size:12.0pt;font-family:Arial,sans-serif;margin-bottom:0cm;text-align:justify;text-indent:2.0cm;line-height:normal">
+                                <span style="">{{ $decree->summary }}</span>
+                            </div>
+                            <div class="clear-both"></div>
+                            {{-- Conteúdo --}}
+                            <div class="break-words mt-4" id="conteudo_documento">{!! $decree->content !!}</div>
                         </div>
                         <script>
                             $(document).ready(function () {
-                                const fix_style = "float-right w-4/5 md:w-1/2 mt-4 mb-4 text-justify";
-                                $('p[style*="7cm"]').attr("class", fix_style);
-                                $('p[class^="float-right"]').next('p').addClass('clear-both');
-                                
-                                $('p[style*="7cm"]').attr("style", "");
+                                //const fix_style = "float-right w-4/5 md:w-1/2 mt-4 mb-4 text-justify";
+                                //$('p[style*="7cm"]').attr("class", fix_style);
+                                //$('p[class^="float-right"]').next('p').addClass('clear-both');
+                                //$('p[style*="7cm"]').attr("style", "");
                                 $('table').addClass('table-auto');
-                                //$('table').parent().addClass('overflow-x-auto');
+                                $('table').parent().addClass('overflow-x-auto');
                                 $('table, td, th, tr').attr("width", "");
                             });
                         </script>

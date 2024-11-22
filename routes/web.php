@@ -30,6 +30,11 @@ Route::get('/dashboard', function () {
 Route::middleware('auth')->group(function () {
     // Rotas para o gerenciamento de Decretos
     Route::resource('decrees', DecreeController::class);
+    Route::get('/decrees/{number}', [DecreeController::class, 'show'])
+    ->where('number', '[0-9]+')
+    ->name('decrees.show');
+    Route::get('/decrees', [DecreeController::class, 'index'])->name('decrees.index');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

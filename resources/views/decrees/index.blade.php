@@ -97,7 +97,7 @@
                                         {{ \Carbon\Carbon::parse($decree->created_at)->format('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('decrees.show', $decree->id) }}" class="text-blue-500 hover:underline">Ver</a>
+                                        <a href="{{ route('decrees.show', $decree->number) }}" class="text-blue-500 hover:underline">Ver</a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a href="{{ route('decrees.edit', $decree->id) }}" class="text-blue-500 hover:underline">Editar</a>

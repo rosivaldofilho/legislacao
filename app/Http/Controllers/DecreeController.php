@@ -30,8 +30,9 @@ class DecreeController extends Controller
         return view('decrees.index', compact('decrees', 'sort', 'direction'));
     }
 
-    public function show(Decree $decree)
+    public function show($number)
     {
+        $decree = Decree::where('number', $number)->firstOrFail();
         // Carrega anexos do decreto, se houver relação com 'attachments'
         $decree->load('attachments');
 

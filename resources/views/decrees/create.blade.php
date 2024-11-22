@@ -29,7 +29,7 @@
                         <div class="p-6 text-gray-900 dark:text-gray-100">
 
 
-                            <div class="grid grid-cols-1 gap-6 max-w-2xl mx-auto pt-10">
+                            <div class="grid grid-cols-1 gap-6 mx-auto pt-10">
                                 <div>
                                     <label for="number"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número</label>
