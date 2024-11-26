@@ -72,7 +72,7 @@
                                 //$('p[class^="float-right"]').next('p').addClass('clear-both');
                                 //$('p[style*="7cm"]').attr("style", "");
                                 $('table').addClass('table-auto');
-                                $('table').parent().addClass('overflow-x-auto');
+                                $('table').addClass('overflow-x-auto');
                                 $('table, td, th, tr').attr("width", "");
                             });
                         </script>

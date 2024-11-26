@@ -105,7 +105,7 @@ class DecreeController extends Controller
         $decree->user_id = Auth::id(); // Registrar o usuário que criou
         $decree->save();
 
-        return redirect()->route('decrees.index')->with('success', 'Decreto cadastrado com sucesso!');
+        return redirect()->route('decrees.show', $decree->number)->with('success', 'Decreto cadastrado com sucesso!');
     }
 
     public function edit(Decree $decree)
@@ -143,7 +143,7 @@ class DecreeController extends Controller
 
         // Salvar novos arquivos anexados, se houver
 
-        return redirect()->route('decrees.index')->with('success', 'Decreto atualizado com sucesso!');
+        return redirect()->route('decrees.show', $decree->number)->with('success', 'Decreto atualizado com sucesso!');
     }
 
     public function destroy(Decree $decree)
