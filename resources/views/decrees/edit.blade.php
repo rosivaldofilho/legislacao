@@ -22,7 +22,8 @@
                                 class="ml-4 inline-flex items-center px-4 py-2 bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase  tracking-widest hover:bg-gray-500 active:bg-gray-600 focus:outline-none focus:border-gray-700 focus:ring focus:ring-gray-200 disabled:opacity-25 transition">Cancelar</a>
                         </div>
                         <a href="{{ route('decrees.show', $decree->number) }}"
-                            class="ml-4 px-4 py-2 bg-green-600 text-white rounded-md text-xs"><i class="fa-solid fa-search"></i>
+                            class="ml-4 px-4 py-2 bg-green-600 text-white rounded-md text-xs"><i
+                                class="fa-solid fa-search"></i>
                             Ver</a>
                     </div>
                 </div>
@@ -61,33 +62,35 @@
 
                             <!-- DOE -->
                             <div>
-                                <label for="doe_numbers" class="block text-sm font-medium text-gray-700">Publicações no DOE</label>
+                                <label for="doe_numbers" class="block text-sm font-medium text-gray-700">Publicações no
+                                    DOE</label>
                                 <div id="doe_numbers_container">
                                     @foreach ($decree->doe_numbers as $number)
                                         <div class="flex items-center space-x-2 mt-1">
-                                            <input type="text" name="doe_numbers[]" value="{{ $number }}" required="true"
-                                                   class="block w-full rounded-md border-gray-300 shadow-sm">
-                                            <button type="button" 
-                                                    class="remove-button text-red-500 font-bold hover:text-red-700">
+                                            <input type="text" name="doe_numbers[]" value="{{ $number }}"
+                                                required="true"
+                                                class="block w-full rounded-md border-gray-300 shadow-sm">
+                                            <button type="button"
+                                                class="remove-button text-red-500 font-bold hover:text-red-700">
                                                 &times;
                                             </button>
                                         </div>
                                     @endforeach
                                 </div>
-                                <button type="button" id="add_doe_number" 
-                                        class="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
-                                        Adicionar
+                                <button type="button" id="add_doe_number"
+                                    class="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                                    Adicionar
                                 </button>
                             </div>
-                            
+
                             <script>
-                                document.getElementById('add_doe_number').addEventListener('click', function () {
+                                document.getElementById('add_doe_number').addEventListener('click', function() {
                                     const container = document.getElementById('doe_numbers_container');
-                            
+
                                     // Cria o contêiner do novo campo
                                     const fieldContainer = document.createElement('div');
                                     fieldContainer.classList.add('flex', 'items-center', 'space-x-2', 'mt-1');
-                            
+
                                     // Cria o input
                                     const input = document.createElement('input');
                                     input.type = 'text';
@@ -95,29 +98,29 @@
                                     input.placeholder = 'Número do diário';
                                     input.required = true;
                                     input.classList.add('block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm');
-                            
+
                                     // Cria o botão de remover
                                     const removeButton = document.createElement('button');
                                     removeButton.type = 'button';
                                     removeButton.innerHTML = '&times;';
                                     removeButton.classList.add('remove-button', 'text-red-500', 'font-bold', 'hover:text-red-700');
-                            
+
                                     // Adiciona evento de remoção ao botão
-                                    removeButton.addEventListener('click', function () {
+                                    removeButton.addEventListener('click', function() {
                                         fieldContainer.remove();
                                     });
-                            
+
                                     // Adiciona os elementos ao contêiner do novo campo
                                     fieldContainer.appendChild(input);
                                     fieldContainer.appendChild(removeButton);
-                            
+
                                     // Adiciona o novo campo ao contêiner principal
                                     container.appendChild(fieldContainer);
                                 });
-                            
+
                                 // Adiciona funcionalidade de remoção aos botões existentes
                                 document.querySelectorAll('.remove-button').forEach(button => {
-                                    button.addEventListener('click', function () {
+                                    button.addEventListener('click', function() {
                                         button.parentElement.remove();
                                     });
                                 });
@@ -165,7 +168,7 @@
                                 @enderror
                             </div>
 
-                            <!-- Preview do PDF -->
+                            <!-- PREVIEW DO PDF -->
                             @if ($decree->file_pdf)
                                 <div class="mt-2" id="pdf-preview">
                                     <object id="pdf-object" data="{{ asset('storage/' . $decree->file_pdf) }}"
@@ -179,7 +182,7 @@
                                 </div>
                             @endif
 
-                            <!-- Ementa -->
+                            <!-- EMENTA -->
                             <div class="mt-10">
                                 <label for="summary"
                                     class="block text-sm font-bold text-gray-700 dark:text-gray-300">Ementa</label>
@@ -191,7 +194,7 @@
                                 @enderror
                             </div>
 
-                            <!-- Conteúdo -->
+                            <!-- CONTEÚDO -->
                             <div class="mt-10">
                                 <style>
                                     .note-editable {
@@ -230,7 +233,76 @@
                                     });
                                 </script>
                             </div>
-                            <!-- end Conteúdo -->
+                            <!-- END CONTEÚDO -->
+
+                            <!-- ANEXOS -->
+                            @foreach ($decree->attachments as $attachment)
+                                <div id="attachment-{{ $attachment->id }}" class="flex items-center gap-4">
+                                    <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                                        class="text-blue-500">Ver Arquivo</a>
+                                    <input type="text" name="attachments[{{ $attachment->id }}][description]"
+                                        value="{{ $attachment->description }}"
+                                        class="block w-1/2 rounded-md border-gray-300 shadow-sm">
+                                    <button type="button" class="text-red-500"
+                                        onclick="removeAttachment({{ $attachment->id }})">Remover</button>
+                                </div>
+                            @endforeach
+
+                            <div id="attachments-container">
+                                <h3 class="text-lg font-medium text-gray-900">Anexos</h3>
+                                <div class="mt-2">
+                                    <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md"
+                                        onclick="addAttachment()">Adicionar Anexo</button>
+                                </div>
+                                <div class="mt-4 space-y-4">
+                                    <template id="attachment-template">
+                                        <div class="flex items-center gap-4">
+                                            <input type="file" name="attachments[][file]" class="block w-1/2">
+                                            <input type="text" name="attachments[][description]"
+                                                placeholder="Description"
+                                                class="block w-1/2 rounded-md border-gray-300 shadow-sm">
+                                            <button type="button" class="text-red-500"
+                                                onclick="removeAttachment(this)">Remove</button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+
+                            <script>
+                                function addAttachment() {
+                                    const container = document.getElementById('attachments-container');
+                                    const template = document.getElementById('attachment-template').content.cloneNode(true);
+                                    container.appendChild(template);
+                                }
+                                
+                                function removeAttachment(attachmentId) {
+                                    if (!confirm('Are you sure you want to remove this attachment?')) return;
+                            
+                                    fetch(`/attachments/${attachmentId}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Accept': 'application/json',
+                                        },
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            document.getElementById(`attachment-${attachmentId}`).remove();
+                                            alert(data.message);
+                                        } else {
+                                            alert('Failed to delete the attachment.');
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                        alert('An error occurred while deleting the attachment.');
+                                    });
+                                }
+                            </script>
+
+                            <!-- END ANEXOS -->
+
                         </div>
 
                     </div>
@@ -249,9 +321,10 @@
                             <a href="{{ route('decrees.index') }}"
                                 class="ml-4 px-4 py-2 bg-gray-600 text-white rounded">Cancelar</a>
                         </div>
-                        <a href="{{ route('decrees.show', $decree->id) }}"
+                        <a href="{{ route('decrees.show', $decree->number) }}"
                             class="ml-4 px-4 py-2 bg-green-600 text-white rounded"><i class="fa-solid fa-search"></i>
-                            Ver</a>
+                            Ver
+                        </a>
                     </div>
                 </div>
             </div>

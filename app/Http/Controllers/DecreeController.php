@@ -95,7 +95,9 @@ class DecreeController extends Controller
             'effective_date' => 'required|date',
             'summary' => 'required|max:255',
             'content' => 'required',
-            'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
+            'file_pdf' => 'file|mimes:pdf|max:5120', // até 5MB por arquivo
+            'attachments.*.file' => 'nullable|file|mimes:pdf|max:2048',
+            'attachments.*.description' => 'nullable|string|max:255'
         ]);
 
 
@@ -110,6 +112,20 @@ class DecreeController extends Controller
         $decree = new Decree($validated);
         $decree->doe_numbers = $validated['doe_numbers'];
         $decree->user_id = Auth::id(); // Registrar o usuário que criou
+
+
+        if ($request->has('attachments')) {
+            foreach ($request->attachments as $attachment) {
+                if (isset($attachment['file'])) {
+                    $path = $attachment['file']->store('attachments', 'public');
+                    $decree->attachments()->create([
+                        'file_path' => $path,
+                        'description' => $attachment['description'] ?? null,
+                    ]);
+                }
+            }
+        }
+
         $decree->save();
 
         return redirect()->route('decrees.show', $decree->number)->with('success', 'Decreto cadastrado com sucesso!');
@@ -132,7 +148,9 @@ class DecreeController extends Controller
             'effective_date' => 'required|date',
             'summary' => 'required|max:255',
             'content' => 'required',
-            'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
+            'file_pdf' => 'file|mimes:pdf|max:5120', // até 5MB por arquivo
+            'attachments.*.file' => 'nullable|file|mimes:pdf|max:2048',
+            'attachments.*.description' => 'nullable|string|max:255'
         ]);
         
         //dd($validated['doe_numbers']);
@@ -149,6 +167,19 @@ class DecreeController extends Controller
 
             // Armazena o novo arquivo e atualiza o caminho
             $validated['file_pdf'] = $request->file('file_pdf')->store('pdf', 'public');
+        }
+
+        // ANEXOS
+        if ($request->has('attachments')) {
+            foreach ($request->attachments as $attachment) {
+                if (isset($attachment['file'])) {
+                    $path = $attachment['file']->store('attachments', 'public');
+                    $decree->attachments()->create([
+                        'file_path' => $path,
+                        'description' => $attachment['description'] ?? null,
+                    ]);
+                }
+            }
         }
 
         // Atualizar o Decree

@@ -76,7 +76,7 @@
                                 <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 break-words">{{ $decree->summary }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $decree->created_at->format('d/m/Y') }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="{{ route('decrees.show', $decree->id) }}" class="text-blue-500 hover:underline">Ver</a>
+                                    <a href="{{ route('decrees.show', $decree->number) }}" class="text-blue-500 hover:underline">Ver</a>
                                 </td>
                             </tr>
                         @endforeach

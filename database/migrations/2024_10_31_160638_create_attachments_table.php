@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('decree_id')->constrained()->onDelete('cascade');
-            $table->string('file_path');
+            $table->string('file_path'); // Caminho do arquivo
+            $table->string('description')->nullable(); // Descrição opcional
             $table->timestamps();
         });
     }

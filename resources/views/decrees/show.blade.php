@@ -8,13 +8,24 @@
     <div class="pt-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="px-6 py-4 text-gray-900 dark:text-gray-100 flex">
-                    <a href="{{ route('decrees.edit', $decree->id) }}"
-                        class="px-4 py-2 bg-blue-600 text-white rounded-md text-xs uppercase">
-                        Editar
-                    </a>
-                    <a href="{{ route('decrees.index') }}"
-                        class="ml-4 px-4 py-2 bg-gray-600 text-white rounded-md text-xs">Voltar</a>
+                <div class="px-6 py-4 text-gray-900 dark:text-gray-100 flex justify-between">
+                    <div>
+                        <a href="{{ route('decrees.edit', $decree->id) }}"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md text-xs uppercase">
+                            Editar
+                        </a>
+                        <a href="{{ route('decrees.index') }}"
+                            class="ml-4 px-4 py-2 bg-gray-600 text-white rounded-md text-xs">Voltar</a>
+                    </div>
+                    <div class="content-center">
+                        @if ($decree->file_pdf)
+                            <a href="{{ asset('storage/' . $decree->file_pdf) }}" target="_blank"
+                                class="text-blue-500 text-2xl">
+                                <span class="text-lg"><i class="fa-solid fa-arrow-down"></i></span> <i
+                                    class="fa-regular fa-file-pdf"></i>
+                            </a>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,8 +38,11 @@
                     <div>
                         <p class="text-gray-600">Decreto, nº <span class="font-bold">{{ $decree->number }}</span> de
                             {{ \Carbon\Carbon::parse($decree->effective_date)->format('d/m/Y') }}</p>
+                        
+                    </div>
+                    <div>
                         @if ($decree->doe_numbers)
-                            <p class="text-gray-600">Publicações no diário:
+                            <p class="text-lg font-medium text-gray-900">Publicações no diário: </p>
                             <ul class="list-disc ml-5">
                                 @foreach ($decree->doe_numbers as $number)
                                     <li class="text-blue-600"><a
@@ -36,17 +50,39 @@
                                             target="_blank">DOE {{ $number }}</a></li>
                                 @endforeach
                             </ul>
-                            </p>
                         @endif
                     </div>
-                    <div class="content-center">
-                        @if ($decree->file_pdf)
-                            <a href="{{ asset('storage/' . $decree->file_pdf) }}" target="_blank"
-                                class="text-blue-500 text-2xl">
-                                <span class="text-lg"><i class="fa-solid fa-arrow-down"></i></span> <i
-                                    class="fa-regular fa-file-pdf"></i>
-                            </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pt-2">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="px-6 py-4 text-gray-900 dark:text-gray-100 flex justify-between">
+                    <div>
+                        @if ($decree->attachments)
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900">Anexos</h3>
+                                <ul class="list-disc list-inside">
+                                    @foreach ($decree->attachments as $attachment)
+                                        <li>
+                                            <a href="{{ Storage::url($attachment->file_path) }}" target="_blank"
+                                                class="text-blue-500 hover:underline">
+                                                {{ $attachment->description ?? 'Ver arquivo' }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @endif
+
+                    </div>
+                    <div class="content-center">
+                        <a href="#" class="text-blue-500 text-2xl">
+                            <i class="fa-regular fa-edit"></i>
+                        </a>
                     </div>
                 </div>
             </div>
