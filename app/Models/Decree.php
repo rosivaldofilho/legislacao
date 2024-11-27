@@ -23,6 +23,7 @@ class Decree extends Model
 
     protected $casts = [
         'effective_date' => 'datetime', // Define effective_date como timestamp
+        'doe_numbers' => 'array',
     ];
 
     // Define a relação com o usuário

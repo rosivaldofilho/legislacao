@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('decrees', function (Blueprint $table) {
             $table->id();
             $table->string('number')->unique();// Número do decreto
-            $table->string('doe_number')->unique();// Número do DOE
+            $table->json('doe_numbers')->nullable();// Números do DOE
             $table->timestamp('effective_date');// Data do documento
             $table->string('summary', 255);// Ementa
             $table->string('content');// Conteúdo

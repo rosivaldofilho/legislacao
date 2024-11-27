@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DecreeController extends Controller
 {
+    // MARK: INDEX
     public function index(Request $request)
     {
         // Define o campo de ordenação padrão e a direção padrão
@@ -16,7 +17,7 @@ class DecreeController extends Controller
         $direction = $request->get('direction', 'desc'); // Direção padrão 'asc'
 
         // Verifica se o campo de ordenação é válido e seguro
-        if (!in_array($sort, ['number', 'doe_number', 'effective_date', 'summary', 'created_at'])) {
+        if (!in_array($sort, ['number', 'doe_numbers', 'effective_date', 'summary', 'created_at'])) {
             $sort = 'number';
         }
 
@@ -30,6 +31,7 @@ class DecreeController extends Controller
         return view('decrees.index', compact('decrees', 'sort', 'direction'));
     }
 
+    // MARK: SHOW
     public function show($number)
     {
         $decree = Decree::where('number', $number)->firstOrFail();
@@ -46,6 +48,7 @@ class DecreeController extends Controller
         return view('decrees.create');
     }
 
+    // MARK: SEARCH
     public function search(Request $request)
     {
         $query = Decree::query();
@@ -55,8 +58,8 @@ class DecreeController extends Controller
             $query->where('number', 'like', '%' . $request->input('number') . '%');
         }
 
-        if ($request->filled('doe_number')) {
-            $query->where('doe_number', 'like', '%' . $request->input('doe_number') . '%');
+        if ($request->filled('doe_numbers')) {
+            $query->where('doe_numbers', 'like', '%' . $request->input('doe_numbers') . '%');
         }
 
         if ($request->filled('effective_date')) {
@@ -81,12 +84,14 @@ class DecreeController extends Controller
         return view('decrees.search', compact('decrees'));
     }
 
+    // MARK: STORE
     public function store(Request $request)
     {
         // Validar os dados do formulário
         $validated = $request->validate([
             'number' => 'required|unique:decrees',
-            'doe_number' => 'required',
+            'doe_numbers' => 'required|array', // Verifica se é uma lista
+            'doe_numbers.*' => 'required|string', // Verifica cada item da lista
             'effective_date' => 'required|date',
             'summary' => 'required|max:255',
             'content' => 'required',
@@ -101,7 +106,9 @@ class DecreeController extends Controller
             $validated['file_pdf'] = $request->file('file_pdf')->store('pdf', 'public');
         }
 
+        
         $decree = new Decree($validated);
+        $decree->doe_numbers = $validated['doe_numbers'];
         $decree->user_id = Auth::id(); // Registrar o usuário que criou
         $decree->save();
 
@@ -114,17 +121,23 @@ class DecreeController extends Controller
         return view('decrees.edit', compact('decree'));
     }
 
+    // MARK: UPDATE
     public function update(Request $request, Decree $decree)
     {
         // Validar os dados do formulário
         $validated = $request->validate([
             'number' => 'required|unique:decrees,number,' . $decree->id,
-            'doe_number' => 'required',
+            'doe_numbers' => 'required|array', // Verifica se é uma lista
+            'doe_numbers.*' => 'required|string', // Verifica cada item da lista
             'effective_date' => 'required|date',
             'summary' => 'required|max:255',
             'content' => 'required',
             'file_pdf' => 'file|mimes:pdf|max:5120' // até 5MB por arquivo
         ]);
+        
+        //dd($validated['doe_numbers']);
+        // Adicionando a lista de números do DOE
+        $decree->doe_numbers = $validated['doe_numbers'];
 
         // Processa o upload de um novo arquivo PDF, se houver
         if ($request->hasFile('file_pdf')) {
@@ -146,6 +159,7 @@ class DecreeController extends Controller
         return redirect()->route('decrees.show', $decree->number)->with('success', 'Decreto atualizado com sucesso!');
     }
 
+    // MARK: DESTROY
     public function destroy(Decree $decree)
     {
         // Excluir o Decree (exclusão lógica)

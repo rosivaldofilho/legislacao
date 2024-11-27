@@ -44,6 +44,8 @@
 
 
                         <div class="grid grid-cols-1 gap-6">
+
+                            <!-- NÚMERO -->
                             <div>
                                 <label for="number"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300">Número</label>
@@ -55,18 +57,73 @@
                                     <span class="text-red-600 text-sm">{{ $message }}</span>
                                 @enderror
                             </div>
+                            <!-- END NÚMERO -->
 
+                            <!-- DOE -->
                             <div>
-                                <label for="doe_number"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">DOE</label>
-                                <input type="text" name="doe_number" id="doe_number"
-                                    value="{{ old('doe_number', $decree->doe_number) }}"
-                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-700 dark:text-gray-100"
-                                    placeholder="Digite o número do DOE">
-                                @error('doe_number')
-                                    <span class="text-red-600 text-sm">{{ $message }}</span>
-                                @enderror
+                                <label for="doe_numbers" class="block text-sm font-medium text-gray-700">Publicações no DOE</label>
+                                <div id="doe_numbers_container">
+                                    @foreach ($decree->doe_numbers as $number)
+                                        <div class="flex items-center space-x-2 mt-1">
+                                            <input type="text" name="doe_numbers[]" value="{{ $number }}" required="true"
+                                                   class="block w-full rounded-md border-gray-300 shadow-sm">
+                                            <button type="button" 
+                                                    class="remove-button text-red-500 font-bold hover:text-red-700">
+                                                &times;
+                                            </button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <button type="button" id="add_doe_number" 
+                                        class="mt-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                                        Adicionar
+                                </button>
                             </div>
+                            
+                            <script>
+                                document.getElementById('add_doe_number').addEventListener('click', function () {
+                                    const container = document.getElementById('doe_numbers_container');
+                            
+                                    // Cria o contêiner do novo campo
+                                    const fieldContainer = document.createElement('div');
+                                    fieldContainer.classList.add('flex', 'items-center', 'space-x-2', 'mt-1');
+                            
+                                    // Cria o input
+                                    const input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.name = 'doe_numbers[]';
+                                    input.placeholder = 'Número do diário';
+                                    input.required = true;
+                                    input.classList.add('block', 'w-full', 'rounded-md', 'border-gray-300', 'shadow-sm');
+                            
+                                    // Cria o botão de remover
+                                    const removeButton = document.createElement('button');
+                                    removeButton.type = 'button';
+                                    removeButton.innerHTML = '&times;';
+                                    removeButton.classList.add('remove-button', 'text-red-500', 'font-bold', 'hover:text-red-700');
+                            
+                                    // Adiciona evento de remoção ao botão
+                                    removeButton.addEventListener('click', function () {
+                                        fieldContainer.remove();
+                                    });
+                            
+                                    // Adiciona os elementos ao contêiner do novo campo
+                                    fieldContainer.appendChild(input);
+                                    fieldContainer.appendChild(removeButton);
+                            
+                                    // Adiciona o novo campo ao contêiner principal
+                                    container.appendChild(fieldContainer);
+                                });
+                            
+                                // Adiciona funcionalidade de remoção aos botões existentes
+                                document.querySelectorAll('.remove-button').forEach(button => {
+                                    button.addEventListener('click', function () {
+                                        button.parentElement.remove();
+                                    });
+                                });
+                            </script>
+
+                            <!-- END DOE -->
 
                             <div>
                                 <label for="effective_date"

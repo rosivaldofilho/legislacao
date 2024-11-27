@@ -41,9 +41,9 @@
                                     </a>
                                 </th>
                                 <th scope="col" style="min-width: 10em" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                                    <a href="{{ route('decrees.index', ['sort' => 'doe_number', 'direction' => $sort === 'doe_number' && $direction === 'asc' ? 'desc' : 'asc']) }}">
+                                    <a href="{{ route('decrees.index', ['sort' => 'doe_numbers', 'direction' => $sort === 'doe_numbers' && $direction === 'asc' ? 'desc' : 'asc']) }}">
                                         DOE
-                                        @if ($sort === 'doe_number')
+                                        @if ($sort === 'doe_numbers')
                                             <span>{{ $direction === 'asc' ? '↑' : '↓' }}</span>
                                         @endif
                                     </a>
@@ -85,7 +85,9 @@
                                         <a href="{{ route('decrees.edit', $decree->id) }}" class="text-blue-500 hover:underline">{{ $decree->number }}</a>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
-                                        {{ $decree->doe_number }} 
+                                        @foreach ($decree->doe_numbers as $doe_number)
+                                        {{ $doe_number }} |
+                                        @endforeach
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                                         {{ \Carbon\Carbon::parse($decree->effective_date)->format('d/m/Y') }} {{-- Data de Publicação --}}
