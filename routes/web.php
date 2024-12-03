@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
 
     // Anexos
     Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+    Route::post('/decrees/{decree}/attachments', [DecreeController::class, 'store'])->name('decrees.attachments.store');
+    Route::put('/decrees/{decree}/attachments', [DecreeController::class, 'updateAttachments'])->name('decrees.updateAttachments');
 
 });
 

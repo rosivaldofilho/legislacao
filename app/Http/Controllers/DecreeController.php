@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attachment;
 use App\Models\Decree;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -108,7 +109,7 @@ class DecreeController extends Controller
             $validated['file_pdf'] = $request->file('file_pdf')->store('pdf', 'public');
         }
 
-        
+
         $decree = new Decree($validated);
         $decree->doe_numbers = $validated['doe_numbers'];
         $decree->user_id = Auth::id(); // Registrar o usuário que criou
@@ -152,7 +153,7 @@ class DecreeController extends Controller
             'attachments.*.file' => 'nullable|file|mimes:pdf|max:2048',
             'attachments.*.description' => 'nullable|string|max:255'
         ]);
-        
+
         //dd($validated['doe_numbers']);
         // Adicionando a lista de números do DOE
         $decree->doe_numbers = $validated['doe_numbers'];
@@ -170,15 +171,37 @@ class DecreeController extends Controller
         }
 
         // ANEXOS
-        if ($request->has('attachments')) {
-            foreach ($request->attachments as $attachment) {
-                if (isset($attachment['file'])) {
-                    $path = $attachment['file']->store('attachments', 'public');
-                    $decree->attachments()->create([
-                        'file_path' => $path,
-                        'description' => $attachment['description'] ?? null,
-                    ]);
+        // Processa os anexos marcados para exclusão
+
+        if ($request->has('attachments_to_remove')) {
+            foreach ($request->attachments_to_remove as $attachmentId) {
+                $attachment = Attachment::find($attachmentId);
+                if ($attachment) {
+                    // Exclui o arquivo fisicamente
+                    Storage::delete($attachment->file_path);
+                    $attachment->delete();
                 }
+            }
+        }
+
+        // Processa anexos existentes (atualização de descrição)
+        if ($request->has('attachments_existing')) {
+            foreach ($request->attachments_existing as $attachmentId => $data) {
+                $attachment = Attachment::find($attachmentId);
+                if ($attachment) {
+                    $attachment->description = $data['description'];
+                    $attachment->save();
+                }
+            }
+        }
+
+        // Processa novos anexos
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $file) {
+                $decree->attachments()->create([
+                    'file_path' => $file->store('attachments'),
+                    'description' => $file['description'],
+                ]);
             }
         }
 
@@ -204,5 +227,58 @@ class DecreeController extends Controller
         $decree = Decree::withTrashed()->findOrFail($id);
         $decree->restore();
         return redirect()->route('decrees.index')->with('success', 'Decreto restaurado com sucesso!');
+    }
+
+
+
+    public function updateAttachments(Request $request, Decree $decree)
+    {
+        $validated = $request->validate([
+            'attachments_existing.*.id' => 'integer|exists:attachments,id',
+            'attachments_existing.*.description' => 'string|max:255',
+            'attachments.*.file' => 'file|mimes:pdf|max:2048',
+            'attachments.*.description' => 'string|max:255',
+        ]);
+
+        // IDs dos anexos enviados no formulário
+        $existingAttachmentIds = collect($validated['attachments_existing'] ?? [])->pluck('id')->all();
+
+        // IDs dos anexos atualmente no banco
+        $currentAttachmentIds = $decree->attachments()->pluck('id')->all();
+
+        // Remover anexos que não estão no request
+        $attachmentsToRemove = array_diff($currentAttachmentIds, $existingAttachmentIds);
+
+        foreach ($attachmentsToRemove as $id) {
+            $attachment = $decree->attachments()->find($id);
+            if ($attachment) {
+                Storage::delete($attachment->file_path); // Excluir o arquivo
+                $attachment->delete(); // Remover do banco
+            }
+        }
+
+        // Atualizar descrições dos anexos existentes
+        if (!empty($validated['attachments_existing'])) {
+            foreach ($validated['attachments_existing'] as $existing) {
+                $attachment = $decree->attachments()->find($existing['id']);
+                if ($attachment) {
+                    $attachment->update(['description' => $existing['description']]);
+                }
+            }
+        }
+
+        // Adicionar novos anexos
+        if (!empty($validated['attachments'])) {
+            foreach ($validated['attachments'] as $newAttachment) {
+                
+                $path = $newAttachment['file']->store('attachments', 'public');
+                $decree->attachments()->create([
+                    'file_path' => $path,
+                    'description' => $newAttachment['description'],
+                ]);
+            }
+        }
+
+        return redirect()->route('decrees.show', $decree->number)->with('success', 'Anexos atualizados com sucesso!');
     }
 }
